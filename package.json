@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Ce projet est à propos de la restaurant nommé <mark>Delta Hôtel®</mark> en utilisant le framework <mark>Express JS</mark> comme outils pour le back-end de ce site.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "nodemon ./backend/server.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,12 @@
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "pg": "^8.13.0"
+    "fs": "^0.0.1-security",
+    "pg": "^8.13.0",
+    "react-router-dom": "^6.27.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "nodemon": "^3.1.7"
   }
 }

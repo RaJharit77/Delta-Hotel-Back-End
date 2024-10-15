@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "fullName": "Rajoharitiana Raharison",
+    "email": "rajoharitiana.raharison@gmail.com",
+    "phone": "0328953074",
+    "checkIn": "2024-10-14",
+    "checkOut": "2024-10-31",
+    "roomType": "chambre_classique",
+    "guests": "7"
+  }
+]
