@@ -14,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 //api
+//services
 app.get('/api/services', async (req, res) => {
     try {
         const data = await fs.readFile(path.resolve(__dirname, './data/data.json'), 'utf8');
@@ -25,7 +26,8 @@ app.get('/api/services', async (req, res) => {
     }
 });
 
-app.post('/api/contact', async (req, res) => {
+//contacts
+app.post('/api/contacts', async (req, res) => {
     const contactData = req.body;
 
     console.log('Données de contact reçues:', contactData);
@@ -43,7 +45,8 @@ app.post('/api/contact', async (req, res) => {
     }
 });
 
-app.post('/api/reservation', async (req, res) => {
+//reservations
+app.post('/api/reservations', async (req, res) => {
     console.log('Réservation reçue:', req.body);
 
     const reservationData = req.body;
