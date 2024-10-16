@@ -17,8 +17,8 @@ app.use(express.json());
 app.get('/api/services', async (req, res) => {
     try {
         const data = await fs.readFile(path.resolve(__dirname, './data/data.json'), 'utf8');
-        const menuItems = JSON.parse(data);
-        res.json(menuItems);
+        const hotelItems = JSON.parse(data);
+        res.json(hotelItems);
     } catch (error) {
         console.error('Error reading menu data:', error.message);
         res.status(500).json({ message: 'Internal server error', error: error.message });
@@ -61,8 +61,6 @@ app.post('/api/reservation', async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la réservation.' });
     }
 });
-
-
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
