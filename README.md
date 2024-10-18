@@ -26,6 +26,6 @@ delta hotel: https://delta-hotel-madagascar.onrender.com
 
 
 ### Le Lien du déploiement du site sur vercel
-Voici le lien du site web déployé sur render(https://vercel.com): 
+Voici le lien du site web déployé sur vercel(https://vercel.com): 
 
 delta hotel: https://delta-hotel-madagascar.vercel.app
