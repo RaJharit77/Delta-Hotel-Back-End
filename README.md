@@ -1,4 +1,4 @@
-# Delta-Hôtel-Back-End
+# Delta-Hotel-Back-End
 Ce projet est à propos de la restaurant nommé <mark>Delta Hotel®</mark> en utilisant le framework <mark>Express JS</mark> comme outils pour le back-end de ce site.
 
 ### Description du projet
