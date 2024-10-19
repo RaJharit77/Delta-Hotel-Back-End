@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Reservation from './models/Reservation.js';
+import Service from './models/Services.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,6 +34,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 const mongoURI = `mongodb+srv://rajoharitianaraharison:<rajharit_77>@delta-hotel.p2j3y.mongodb.net/?retryWrites=true&w=majority&appName=Delta-Hotel`;
 
@@ -92,6 +94,18 @@ app.post('/api/reservations', async (req, res) => {
     }
 });
 
+//MongoDB
+//Services
+app.get('/api/services', async (req, res) => {
+    try {
+        const services = await Service.find();
+        res.json(services);
+    } catch (error) {
+        console.error('Error fetching services:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 //reservations
 app.post('/api/reservations', async (req, res) => {
     console.log('Réservation reçue:', req.body);
@@ -105,6 +119,32 @@ app.post('/api/reservations', async (req, res) => {
     } catch (error) {
         console.error('Erreur lors de la réservation:', error);
         res.status(500).json({ message: 'Erreur lors de la réservation.' });
+    }
+});
+
+//reservation
+app.post('/api/reservations', async (req, res) => {
+    const reservationData = new Reservation(req.body);
+
+    try {
+        await reservationData.save();
+        res.status(200).json({ message: 'Réservation effectuée avec succès.' });
+    } catch (error) {
+        console.error('Erreur lors de la réservation:', error);
+        res.status(500).json({ message: 'Erreur lors de la réservation.' });
+    }
+});
+
+//Contacts
+app.post('/api/contacts', async (req, res) => {
+    const contactData = new Contact(req.body);
+
+    try {
+        await contactData.save();
+        res.status(200).json({ message: 'Message envoyé avec succès.' });
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi du message:', error);
+        res.status(500).json({ message: 'Erreur lors de l\'envoi du message.' });
     }
 });
 
