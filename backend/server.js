@@ -36,7 +36,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const mongoURI = `mongodb+srv://rajoharitianaraharison:rajharit_77@delta-hotel.p2j3y.mongodb.net/deltaHotel?retryWrites=true&w=majority&appName=Delta-Hotel`;
+const mongoURI = `mongodb+srv://rajoharitianaraharison:rajharit_77@delta-hotel.p2j3y.mongodb.net/deltaHotel?retryWrites=true&w=majority`;
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connecté'))
