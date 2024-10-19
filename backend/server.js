@@ -1,8 +1,10 @@
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs/promises';
+import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Reservation from './models/Reservation.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +33,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+
+const mongoURI = 'mongodb+srv://rajoharitianaraharison:<db_password>@delta-hotel.p2j3y.mongodb.net/?retryWrites=true&w=majority&appName=Delta-Hotel';
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connecté'))
+    .catch(err => console.error('Erreur de connexion à MongoDB:', err));
 
 //api
 //services
@@ -76,6 +84,22 @@ app.post('/api/reservations', async (req, res) => {
         const reservations = JSON.parse(existingData || '[]');
         reservations.push(reservationData);
         await fs.writeFile(dataPath, JSON.stringify(reservations, null, 2));
+        console.log('Réservation enregistrée avec succès:', reservationData);
+        res.status(200).json({ message: 'Réservation effectuée avec succès.' });
+    } catch (error) {
+        console.error('Erreur lors de la réservation:', error);
+        res.status(500).json({ message: 'Erreur lors de la réservation.' });
+    }
+});
+
+//reservations
+app.post('/api/reservations', async (req, res) => {
+    console.log('Réservation reçue:', req.body);
+
+    const reservationData = new Reservation(req.body); // Créer une instance du modèle
+
+    try {
+        await reservationData.save(); // Enregistrer dans la base de données
         console.log('Réservation enregistrée avec succès:', reservationData);
         res.status(200).json({ message: 'Réservation effectuée avec succès.' });
     } catch (error) {
