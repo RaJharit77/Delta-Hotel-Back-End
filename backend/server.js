@@ -1,6 +1,5 @@
 import cors from 'cors';
 import express from 'express';
-import fs from 'fs/promises';
 import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -44,6 +43,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 //api
 //services
+/**
 app.get('/api/services', async (req, res) => {
     try {
         const data = await fs.readFile(path.resolve(__dirname, './data/data.json'), 'utf8');
@@ -93,7 +93,7 @@ app.post('/api/reservations', async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la réservation.' });
     }
 });
-
+*/
 //MongoDB
 //Services
 app.get('/api/services', async (req, res) => {
@@ -115,19 +115,6 @@ app.post('/api/reservations', async (req, res) => {
     try {
         await reservationData.save(); // Enregistrer dans la base de données
         console.log('Réservation enregistrée avec succès:', reservationData);
-        res.status(200).json({ message: 'Réservation effectuée avec succès.' });
-    } catch (error) {
-        console.error('Erreur lors de la réservation:', error);
-        res.status(500).json({ message: 'Erreur lors de la réservation.' });
-    }
-});
-
-//reservation
-app.post('/api/reservations', async (req, res) => {
-    const reservationData = new Reservation(req.body);
-
-    try {
-        await reservationData.save();
         res.status(200).json({ message: 'Réservation effectuée avec succès.' });
     } catch (error) {
         console.error('Erreur lors de la réservation:', error);
