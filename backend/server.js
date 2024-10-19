@@ -40,7 +40,10 @@ const mongoURI = `mongodb+srv://rajohari77:rajharit_07@delta-hotel.p2j3y.mongodb
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connecté'))
-    .catch(err => console.error('Erreur de connexion à MongoDB:', err));
+    .catch(err => {
+        console.error('Erreur de connexion à MongoDB:', err.message);
+        process.exit(1); // Arrête le serveur
+    });
 
 //api
 //services
