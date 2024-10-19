@@ -98,6 +98,7 @@ app.post('/api/reservations', async (req, res) => {
 //MongoDB
 //Services
 app.get('/api/services', async (req, res) => {
+    res.json({ message: 'API services fonctionne !' });
     try {
         const services = await Service.find();
         res.json(services);
