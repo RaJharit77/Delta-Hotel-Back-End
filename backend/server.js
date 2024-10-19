@@ -34,7 +34,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-const mongoURI = 'mongodb+srv://rajoharitianaraharison:<db_password>@delta-hotel.p2j3y.mongodb.net/?retryWrites=true&w=majority&appName=Delta-Hotel';
+const mongoURI = `mongodb+srv://rajoharitianaraharison:<rajharit_77>@delta-hotel.p2j3y.mongodb.net/?retryWrites=true&w=majority&appName=Delta-Hotel`;
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connecté'))
