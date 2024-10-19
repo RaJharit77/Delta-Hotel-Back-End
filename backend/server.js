@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Contact from './models/Contacts.js';
 import Reservation from './models/Reservation.js';
 import Service from './models/Services.js';
 
@@ -35,7 +36,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const mongoURI = `mongodb+srv://rajoharitianaraharison:<rajharit_77>@delta-hotel.p2j3y.mongodb.net/?retryWrites=true&w=majority&appName=Delta-Hotel`;
+const mongoURI = `mongodb+srv://rajoharitianaraharison:rajharit_77@delta-hotel.p2j3y.mongodb.net/deltaHotel?retryWrites=true&w=majority&appName=Delta-Hotel`;
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connecté'))
