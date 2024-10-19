@@ -16,10 +16,12 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
+    "lowdb": "^7.0.1",
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.2",
     "pg": "^8.13.0",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

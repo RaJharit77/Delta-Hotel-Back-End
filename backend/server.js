@@ -1,22 +1,52 @@
 import cors from 'cors';
 import express from 'express';
-import mongoose from 'mongoose';
+import fs from 'fs';
 import path from 'path';
+import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
-import Contact from './models/Contacts.js';
-import Reservation from './models/Reservation.js';
-import Service from './models/Services.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-//origin autorized
+const dbPath = process.env.DB_PATH || './database.db';
+
+const db = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+        console.error('Erreur lors de l\'ouverture de la base de données:', err.message);
+    } else {
+        console.log('Connected to SQLite database.');
+
+        db.run(`
+            CREATE TABLE IF NOT EXISTS contacts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                email TEXT,
+                message TEXT
+            )
+        `);
+
+        db.run(`
+            CREATE TABLE IF NOT EXISTS reservations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                email TEXT,
+                phone TEXT,
+                check_in TEXT,
+                check_out TEXT,
+                room_type TEXT,
+                guest INTEGER
+            )
+        `);
+    }
+});
+
+// Origin autorisé
 const allowedOrigins = [
     'https://delta-hotel-madagascar.vercel.app',
-    'https://delta-hotel-madagascar.onrender.com'
+    'https://delta-hotel-madagascar.onrender.com',
+    'http://localhost:5173'
 ];
 
 const corsOptions = {
@@ -34,109 +64,55 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
-const mongoURI = `mongodb+srv://rajohari77:rajharit_07@delta-hotel.p2j3y.mongodb.net/deltaHotel?retryWrites=true&w=majority`;
-
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connecté'))
-    .catch(err => {
-        console.error('Erreur de connexion à MongoDB:', err.message);
-        process.exit(1); // Arrête le serveur
+// API pour les services
+app.get('/api/services', (req, res) => {
+    fs.readFile(path.join(__dirname, './data/data.json'), 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading data.json:', err);
+            return res.status(500).json({ message: 'Internal server error', error: err.message });
+        }
+        res.json(JSON.parse(data));
     });
-
-//api
-//services
-/**
-app.get('/api/services', async (req, res) => {
-    try {
-        const data = await fs.readFile(path.resolve(__dirname, './data/data.json'), 'utf8');
-        const hotelItems = JSON.parse(data);
-        res.json(hotelItems);
-    } catch (error) {
-        console.error('Error reading menu data:', error.message);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
-    }
 });
 
-//contacts
+// API pour les contacts
 app.post('/api/contacts', async (req, res) => {
     const contactData = req.body;
 
-    console.log('Données de contact reçues:', contactData);
+    if (!contactData.name || !contactData.email || !contactData.message) {
+        return res.status(400).json({ message: 'Tous les champs sont requis.' });
+    }
 
     try {
-        const dataPath = path.join(__dirname, './data/contacts.json');
-        const existingData = await fs.readFile(dataPath, 'utf8');
-        const contacts = JSON.parse(existingData || '[]');
-        contacts.push(contactData);
-        await fs.writeFile(dataPath, JSON.stringify(contacts, null, 2));
-        res.status(200).json({ message: 'Message envoyé avec succès.'});
+        const result = await db.run(
+            'INSERT INTO contacts (name, email, message) VALUES (?, ?, ?)',
+            [contactData.name, contactData.email, contactData.message]
+        );
+        res.status(200).json({ message: 'Message envoyé avec succès.', contactId: result.lastID });
     } catch (error) {
         console.error('Erreur lors de l\'envoi du message:', error);
-        res.status(500).json({ message: 'Erreur lors de l\'envoi du message.'});
+        res.status(500).json({ message: 'Erreur lors de l\'envoi du message.', error: error.message });
     }
 });
 
-//reservations
+// API pour les réservations
 app.post('/api/reservations', async (req, res) => {
-    console.log('Réservation reçue:', req.body);
+    const { fullName, email, phone, checkIn, checkOut, roomType, guests } = req.body;
 
-    const reservationData = req.body;
+    if (!fullName || !email || !phone || !checkIn || !checkOut || !roomType || !guests) {
+        return res.status(400).json({ message: 'Tous les champs sont requis.' });
+    }
 
     try {
-        const dataPath = path.join(__dirname, './data/reservations.json');
-        const existingData = await fs.readFile(dataPath, 'utf8');
-        const reservations = JSON.parse(existingData || '[]');
-        reservations.push(reservationData);
-        await fs.writeFile(dataPath, JSON.stringify(reservations, null, 2));
-        console.log('Réservation enregistrée avec succès:', reservationData);
-        res.status(200).json({ message: 'Réservation effectuée avec succès.' });
+        const result = await db.run(
+            'INSERT INTO reservations (name, email, phone, check_in, check_out, room_type, guest) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [fullName, email, phone, checkIn, checkOut, roomType, parseInt(guests)]
+        );
+        res.status(200).json({ message: 'Réservation réussie.', reservationId: result.lastID });
     } catch (error) {
         console.error('Erreur lors de la réservation:', error);
-        res.status(500).json({ message: 'Erreur lors de la réservation.' });
-    }
-});
-*/
-//MongoDB
-//Services
-app.get('/api/services', async (req, res) => {
-    res.json({ message: 'API services fonctionne !' });
-    try {
-        const services = await Service.find();
-        res.json(services);
-    } catch (error) {
-        console.error('Error fetching services:', error.message);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
-//reservations
-app.post('/api/reservations', async (req, res) => {
-    console.log('Réservation reçue:', req.body);
-
-    const reservationData = new Reservation(req.body); // Créer une instance du modèle
-
-    try {
-        await reservationData.save(); // Enregistrer dans la base de données
-        console.log('Réservation enregistrée avec succès:', reservationData);
-        res.status(200).json({ message: 'Réservation effectuée avec succès.' });
-    } catch (error) {
-        console.error('Erreur lors de la réservation:', error);
-        res.status(500).json({ message: 'Erreur lors de la réservation.' });
-    }
-});
-
-//Contacts
-app.post('/api/contacts', async (req, res) => {
-    const contactData = new Contact(req.body);
-
-    try {
-        await contactData.save();
-        res.status(200).json({ message: 'Message envoyé avec succès.' });
-    } catch (error) {
-        console.error('Erreur lors de l\'envoi du message:', error);
-        res.status(500).json({ message: 'Erreur lors de l\'envoi du message.' });
+        res.status(500).json({ message: 'Erreur lors de la réservation.', error: error.message });
     }
 });
 
