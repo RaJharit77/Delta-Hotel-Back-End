@@ -23,6 +23,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
                 email TEXT,
+                subject TEXT,
                 message TEXT
             )
         `);
