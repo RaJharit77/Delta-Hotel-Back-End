@@ -67,15 +67,23 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// API pour les services
-app.get('/api/services', (req, res) => {
-    fs.readFile(path.join(__dirname, './data/data.json'), 'utf8', (err, data) => {
-        if (err) {
-            console.error('Error reading data.json:', err);
-            return res.status(500).json({ message: 'Internal server error', error: err.message });
-        }
-        res.json(JSON.parse(data));
+app.use((req, res, next) => {
+    res.setTimeout(10000, () => {  // Timeout fixé à 10 secondes
+        console.log('Request has timed out.');
+        res.status(504).send('Request timed out');
     });
+    next();
+});
+
+// API pour les services
+app.get('/api/services', async (req, res) => {
+    try {
+        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
+        res.json(JSON.parse(data));
+    } catch (err) {
+        console.error('Error reading data.json:', err);
+        res.status(500).json({ message: 'Internal server error', error: err.message });
+    }
 });
 
 // API pour les contacts
