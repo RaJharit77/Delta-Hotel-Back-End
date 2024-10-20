@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 const dbPath = process.env.DB_PATH || './database.db';
 
+//SQLite
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Erreur lors de l\'ouverture de la base de données:', err.message);
