@@ -1,10 +1,10 @@
 import cors from 'cors';
+import Dexie from 'dexie';
 import express from 'express';
-import { JSONFile, Low } from 'lowdb';
+import fs from 'fs/promises';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
-import dataPath from './data/data.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,10 +14,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const dbPath = process.env.DB_PATH || './database.db';
 
-// Setup LowDB
-const dataPath = path.join(__dirname, './data/data.json');
-const adapter = new JSONFile(dataPath);
-const dbs = new Low(adapter);
+// Configurez Dexie.js
+const dbs = new Dexie('HotelServicesDB');
+dbs.version(1).stores({
+    services: '++id, img, titre, description'
+});
 
 //SQLite
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -86,24 +87,40 @@ app.use((req, res) => {
     res.status(404).json({ message: 'Route non trouvée.' });
 });
 
-// Endpoint pour les services
-app.get('/api/services', async (req, res) => {
-    try {
-        // Charger les données
-        await db.read();
-        const hotelServices = db.data.hotelServices;
+// Chargement des données depuis le fichier data.json
+const dataPath = path.join(__dirname, './data/data.json');
 
-        // Extraire les chambres
-        const services = hotelServices.chambres.map(service => ({
+fs.readFile(dataPath, 'utf8', async (err, data) => {
+    if (err) {
+        console.error('Erreur de lecture du fichier:', err);
+        return;
+    }
+
+    const hotelServices = JSON.parse(data);
+
+    try {
+        // Supprimez toutes les entrées existantes
+        await dbs.services.clear();
+
+        // Ajoutez les nouvelles données
+        await dbs.services.bulkAdd(hotelServices.hotelServices.chambres.map(service => ({
             img: service.img,
             titre: service.titre,
             description: service.description
-        }));
-
-        res.json(services);
+        })));
     } catch (error) {
         console.error('Erreur lors du chargement des services:', error);
-        res.status(500).json({ message: 'Erreur lors du chargement des services.' });
+    }
+});
+
+// API pour les services
+app.get('/api/services', async (req, res) => {
+    try {
+        const services = await dbs.services.toArray();
+        res.json(services);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des services:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des services.' });
     }
 });
 
