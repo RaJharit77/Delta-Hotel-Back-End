@@ -1,7 +1,6 @@
 import cors from 'cors';
 import Dexie from 'dexie';
 import express from 'express';
-import fs from 'fs/promises';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
@@ -87,40 +86,53 @@ app.use((req, res) => {
     res.status(404).json({ message: 'Route non trouvée.' });
 });
 
-// Chargement des données depuis le fichier data.json
-const dataPath = path.join(__dirname, './data/data.json');
-
-fs.readFile('./data/data.json', 'utf8', async (err, data) => {
-    if (err) {
-        console.error('Erreur de lecture du fichier:', err);
-        return;
-    }
-
-    const hotelServices = JSON.parse(data);
-
-    try {
-        // Supprimez toutes les entrées existantes
-        await dbs.services.clear();
-
-        // Ajoutez les nouvelles données
-        await dbs.services.bulkAdd(hotelServices.hotelServices.chambres.map(service => ({
-            img: service.img,
-            titre: service.titre,
-            description: service.description
-        })));
-    } catch (error) {
-        console.error('Erreur lors du chargement des services:', error);
-    }
-});
-
-// API pour les services
+//API pour les services
 app.get('/api/services', async (req, res) => {
     try {
         const services = await dbs.services.toArray();
         res.json(services);
+    } catch (err) {
+        console.error('Error retrieving services from Dexie:', err);
+        res.status(500).json({ message: 'Internal server error', error: err.message });
+    }
+});
+
+// Ajoutez cette fonction pour importer les données depuis data.json vers IndexedDB
+app.post('/api/import-services', async (req, res) => {
+    try {
+        // Lire le fichier data.json
+        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
+        const jsonData = JSON.parse(data);
+        
+        // Insérer les données dans IndexedDB
+        await dbs.services.bulkPut(jsonData.chambres.map(service => ({
+            img: service.img,
+            titre: service.titre,
+            description: service.description
+        })));
+        
+        await dbs.services.bulkPut(jsonData.conciergeries.map(service => ({
+            img: service.imgSrc,
+            titre: service.title,
+            description: service.description
+        })));
+        
+        await dbs.services.bulkPut(jsonData.spaCards.map(service => ({
+            img: service.img,
+            titre: service.title,
+            description: service.description
+        })));
+
+        await dbs.services.bulkPut(jsonData.autresServices.map(service => ({
+            img: service.img,
+            titre: service.titre,
+            description: service.description
+        })));
+
+        res.status(200).json({ message: 'Services imported successfully.' });
     } catch (error) {
-        console.error('Erreur lors de la récupération des services:', error);
-        res.status(500).json({ message: 'Erreur lors de la récupération des services.' });
+        console.error('Error importing services:', error);
+        res.status(500).json({ message: 'Error importing services.', error: error.message });
     }
 });
 
