@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express from 'express';
+import { JSONFile, Low } from 'lowdb';
 import path from 'path';
-import PouchDB from 'pouchdb';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
 
@@ -13,7 +13,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const dbPath = process.env.DB_PATH || './database.db';
 
-const dbs = new PouchDB('./data/data.json');
+const adapter = new JSONFile('./data/data.json');
+const dbs = new Low(adapter);
 
 //SQLite
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -84,13 +85,8 @@ app.use((req, res) => {
 
 //API pour les services
 app.get('/api/services', async (req, res) => {
-    try {
-        const result = await dbs.allDocs({ include_docs: true });
-        res.json(result.rows.map(row => row.doc));
-    } catch (err) {
-        console.error('Error reading data:', err);
-        res.status(500).json({ message: 'Internal server error', error: err.message });
-    }
+    await dbs.read();
+    res.json(db.data);
 });
 
 // API pour les contacts
