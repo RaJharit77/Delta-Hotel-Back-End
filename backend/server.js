@@ -77,6 +77,10 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res) => {
+    res.status(404).json({ message: 'Route non trouvée.' });
+});
+
 // Chargement des données depuis le fichier data.json
 const dataPath = path.join(__dirname, './data/data.json');
 
