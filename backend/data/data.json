@@ -47,36 +47,42 @@
                 "description": "Terrasse privée et jacuzzi avec vue spectaculaire."
             }
         ],
-        "autresServices": [
+        "conciergeries": [
             {
-                "img": "/img/sport.jpg",
-                "titre": "Salle de Fitness et équipements sportifs",
-                "description": "Installations modernes pour les entraînements, avec parfois des coachs personnels pour une expérience de bien-être complète."
+                "title": "Concierge Personnalisé",
+                "description": "Bénéficiez de services sur mesure pour répondre à tous vos besoins durant votre séjour.",
+                "imgSrc": "/img/conciergerie1.jpg",
+                "alt": "Concierge personnalisé"
             },
             {
-                "img": "/img/piscines.jpg",
-                "titre": "Piscine",
-                "description": "Détendez-vous au bord de notre piscine extérieure chauffée, dans un cadre luxueux. Profitez d’un service de cocktails rafraîchissants tout en admirant une vue imprenable sur le paysage environnant."
+                "title": "Réservations Exclusives",
+                "description": "Laissez-nous organiser vos réservations dans les restaurants et événements exclusifs.",
+                "imgSrc": "/img/conciergerie2.jpg",
+                "alt": "Réservations exclusives"
             },
             {
-                "img": "/img/serviceChambre.jpg",
-                "titre": "Service en chambre 24h/24",
-                "description": "Bénéficiez d'un service en chambre 24h/24 pour déguster des plats raffinés et des boissons rafraîchissantes dans le confort de votre chambre, répondant à toutes vos envies."
+                "title": "Transferts Privés",
+                "description": "Profitez de nos services de transfert privé pour vos déplacements en toute sérénité.",
+                "imgSrc": "/img/conciergerie3.jpg",
+                "alt": "Transferts privés"
             },
             {
-                "img": "/img/wifi.jpg",
-                "titre": "WiFi Gratuit",
-                "description": "Restez connecté grâce à notre connexion WiFi haut débit gratuite, permettant aux clients d'accéder à Internet, offrant ainsi une connexion rapide et pratique pendant votre séjour."
+                "title": "Billeterie",
+                "description": "Réservations de billets pour des spectacles, événements sportifs, ou concerts.",
+                "imgSrc": "/img/conciergerie4.jpg",
+                "alt": "Billetterie"
             },
             {
-                "img": "/img/loisir.jpg",
-                "titre": "Espace de Loisirs",
-                "description": "Un espace dédié à la détente et aux activités récréatives offrant des installations variées telles que des jeux, des espaces de divertissement permettant aux clients de se divertir."
+                "title": "Assistance shopping",
+                "description": "Recommandations de boutiques de luxe et services de personnal shopper, offrant une expérience de shopping sur mesure",
+                "imgSrc": "/img/conciergerie5.jpg",
+                "alt": "Assistance shopping"
             },
             {
-                "img": "/img/voiturier.jpg",
-                "titre": "Service de voiturier et parking privé",
-                "description": "Confiez votre véhicule à notre personnel qui le gare et le récupère à votre demande, assurant ainsi confort et sécurité."
+                "title": "Excursions et visites guidées",
+                "description": "Planification de tours privés ou excursions locales, en personnalisant votre itinéraire selon vos intérêts et préférences.",
+                "imgSrc": "/img/conciergerie6.jpg",
+                "alt": "Excursions et visites guidées"
             }
         ],
         "spaCards": [
@@ -117,42 +123,36 @@
                 "description": "Expériences complètes alliant différents soins pour un bien-être holistique pour harmoniser le corps et l'esprit "
             }
         ],
-        "conciergeries": [
+        "autresServices": [
             {
-                "title": "Concierge Personnalisé",
-                "description": "Bénéficiez de services sur mesure pour répondre à tous vos besoins durant votre séjour.",
-                "imgSrc": "/img/conciergerie1.jpg",
-                "alt": "Concierge personnalisé"
+                "img": "/img/sport.jpg",
+                "titre": "Salle de Fitness et équipements sportifs",
+                "description": "Installations modernes pour les entraînements, avec parfois des coachs personnels pour une expérience de bien-être complète."
             },
             {
-                "title": "Réservations Exclusives",
-                "description": "Laissez-nous organiser vos réservations dans les restaurants et événements exclusifs.",
-                "imgSrc": "/img/conciergerie2.jpg",
-                "alt": "Réservations exclusives"
+                "img": "/img/piscines.jpg",
+                "titre": "Piscine",
+                "description": "Détendez-vous au bord de notre piscine extérieure chauffée, dans un cadre luxueux. Profitez d’un service de cocktails rafraîchissants tout en admirant une vue imprenable sur le paysage environnant."
             },
             {
-                "title": "Transferts Privés",
-                "description": "Profitez de nos services de transfert privé pour vos déplacements en toute sérénité.",
-                "imgSrc": "/img/conciergerie3.jpg",
-                "alt": "Transferts privés"
+                "img": "/img/serviceChambre.jpg",
+                "titre": "Service en chambre 24h/24",
+                "description": "Bénéficiez d'un service en chambre 24h/24 pour déguster des plats raffinés et des boissons rafraîchissantes dans le confort de votre chambre, répondant à toutes vos envies."
             },
             {
-                "title": "Billeterie",
-                "description": "Réservations de billets pour des spectacles, événements sportifs, ou concerts.",
-                "imgSrc": "/img/conciergerie4.jpg",
-                "alt": "Billetterie"
+                "img": "/img/wifi.jpg",
+                "titre": "WiFi Gratuit",
+                "description": "Restez connecté grâce à notre connexion WiFi haut débit gratuite, permettant aux clients d'accéder à Internet, offrant ainsi une connexion rapide et pratique pendant votre séjour."
             },
             {
-                "title": "Assistance shopping",
-                "description": "Recommandations de boutiques de luxe et services de personnal shopper, offrant une expérience de shopping sur mesure",
-                "imgSrc": "/img/conciergerie5.jpg",
-                "alt": "Assistance shopping"
+                "img": "/img/loisir.jpg",
+                "titre": "Espace de Loisirs",
+                "description": "Un espace dédié à la détente et aux activités récréatives offrant des installations variées telles que des jeux, des espaces de divertissement permettant aux clients de se divertir."
             },
             {
-                "title": "Excursions et visites guidées",
-                "description": "Planification de tours privés ou excursions locales, en personnalisant votre itinéraire selon vos intérêts et préférences.",
-                "imgSrc": "/img/conciergerie6.jpg",
-                "alt": "Excursions et visites guidées"
+                "img": "/img/voiturier.jpg",
+                "titre": "Service de voiturier et parking privé",
+                "description": "Confiez votre véhicule à notre personnel qui le gare et le récupère à votre demande, assurant ainsi confort et sécurité."
             }
         ]
     }
