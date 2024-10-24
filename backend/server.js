@@ -117,6 +117,7 @@ db.serialize(async () => {
 app.get('/api/services', async (req, res) => {
     try {
         const result = alasql('SELECT * FROM services');
+        console.log('Résultat des services:', result); 
         res.json(result);
     } catch (err) {
         console.error('Error fetching services:', err);
