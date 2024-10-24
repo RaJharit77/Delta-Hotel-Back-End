@@ -5,13 +5,18 @@ import fs from 'fs/promises';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
+import { promisify } from 'util';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const app = express();
-const PORT = process.env.PORT || 5000;
 
+const app = express();
+
+const PORT = process.env.PORT || 5000;
 const dbPath = process.env.DB_PATH || './database.db';
+
+// Convert db.run to return a promise
+const runAsync = promisify(db.run).bind(db)
 
 //SQLite
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -103,7 +108,7 @@ app.post('/api/contacts', async (req, res) => {
     }
 
     try {
-        const result = await db.run(
+        const result = await runAsync(
             'INSERT INTO contacts (name, email, message) VALUES (?, ?, ?)',
             [contactData.name, contactData.email, contactData.message]
         );
@@ -123,7 +128,7 @@ app.post('/api/reservations', async (req, res) => {
     }
 
     try {
-        const result = await db.run(
+        const result = await runAsync(
             'INSERT INTO reservations (name, email, phone, check_in, check_out, room_type, guest) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [fullName, email, phone, checkIn, checkOut, roomType, parseInt(guests)]
         );
