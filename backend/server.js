@@ -81,14 +81,11 @@ app.get('/api/services', async (req, res) => {
     try {
         const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
         const services = JSON.parse(data);
+        const chambres = alasql('SELECT * FROM ?', [services[0].chambres]);
+        const autresServices = alasql('SELECT * FROM ?', [services[0].autresServices]);
+        const spaCards = alasql('SELECT * FROM ?', [services[0].spaCards]);
+        const conciergeries = alasql('SELECT * FROM ?', [services[0].conciergeries]);
 
-        // Vous pouvez maintenant utiliser AlaSQL pour effectuer des requêtes SQL sur les données JSON
-        const chambres = alasql('SELECT * FROM ?',[services[0].chambres]);
-        const autresServices = alasql('SELECT * FROM ?',[services[0].autresServices]);
-        const spaCards = alasql('SELECT * FROM ?',[services[0].spaCards]);
-        const conciergeries = alasql('SELECT * FROM ?',[services[0].conciergeries]);
-
-        // Renvoyer toutes les données ou seulement des parties sélectionnées par requête SQL
         res.json({ chambres, autresServices, spaCards, conciergeries });
     } catch (err) {
         console.error('Error reading data.json:', err);
