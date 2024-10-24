@@ -24,7 +24,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
     } else {
         console.log('Connected to SQLite database.');
 
-        db.run(`
+        runAsync(`
             CREATE TABLE IF NOT EXISTS contacts (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
@@ -34,7 +34,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
             )
         `);
 
-        db.run(`
+        runAsync(`
             CREATE TABLE IF NOT EXISTS reservations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
@@ -83,11 +83,18 @@ app.use((req, res, next) => {
 // API pour les services
 app.get('/api/services', async (req, res) => {
     try {
-        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        res.json(JSON.parse(data));
-    } catch (err) {
-        console.error('Error reading data.json:', err);
-        res.status(500).json({ message: 'Internal server error', error: err.message });
+        const data = await fs.readFile(path.resolve(__dirname, './data/data.json'), 'utf8');
+        console.log('File read successfully:', data);
+
+        const services = JSON.parse(data);
+
+        const query = `SELECT * FROM ?`;
+        const result = alasql(query, [services]);
+
+        res.json(result);
+    } catch (error) {
+        console.error('Error processing menu data:', error.message);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 });
 
