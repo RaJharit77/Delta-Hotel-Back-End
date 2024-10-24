@@ -1,9 +1,8 @@
-import alasql from 'alasql';
+import sqlite3 from 'better-sqlite3';
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
-import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -84,28 +83,39 @@ app.use((req, res) => {
 // Chargement des données depuis le fichier data.json
 const dataPath = path.join(__dirname, './data/data.json');
 
-fs.readFile(dataPath, 'utf8', (err, data) => {
-    if (err) {
-        console.error('Erreur de lecture du fichier:', err);
-        return;
-    }
+fs.readFile(dataPath, 'utf8')
+    .then(data => {
+        const hotelServices = JSON.parse(data);
+        const servicesStmt = db.prepare(`
+            CREATE TABLE IF NOT EXISTS services (
+                img TEXT,
+                titre TEXT,
+                description TEXT
+            );
+        `);
+        servicesStmt.run();
 
-    const hotelServices = JSON.parse(data);
-
-    try {
-        alasql('CREATE TABLE services (img STRING, titre STRING, description STRING)');
+        const insertServiceStmt = db.prepare(`
+            INSERT INTO services (img, titre, description)
+            VALUES (?, ?, ?)
+        `);
         hotelServices.hotelServices.chambres.forEach(service => {
-            alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
+            insertServiceStmt.run(service.img, service.titre, service.description);
         });
-    } catch (error) {
-        console.error('Erreur lors du chargement des services:', error);
-    }
-});
+    })
+    .catch(err => {
+        console.error('Erreur de lecture du fichier:', err);
+    });
 
 // API pour les services
 app.get('/api/services', (req, res) => {
-    const result = alasql('SELECT * FROM services');
-    res.json(result);
+    try {
+        const services = db.prepare('SELECT * FROM services').all();
+        res.json(services);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des services:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des services' });
+    }
 });
 
 // API pour les contacts
