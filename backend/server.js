@@ -81,12 +81,12 @@ app.get('/api/services', async (req, res) => {
     try {
         const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
         const services = JSON.parse(data);
-        console.log('Données extraites:', { chambres, autresServices, spaCards, conciergeries });
         const chambres = alasql('SELECT * FROM ?', [services[0].chambres]);
         const autresServices = alasql('SELECT * FROM ?', [services[0].autresServices]);
         const spaCards = alasql('SELECT * FROM ?', [services[0].spaCards]);
         const conciergeries = alasql('SELECT * FROM ?', [services[0].conciergeries]);
 
+        console.log('Données extraites:', { chambres, autresServices, spaCards, conciergeries });
         res.json({ chambres, autresServices, spaCards, conciergeries });
     } catch (err) {
         console.error('Error reading data.json:', err);
