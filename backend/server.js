@@ -1,3 +1,4 @@
+import alasql from 'alasql';
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs/promises';
@@ -76,13 +77,26 @@ app.use((req, res, next) => {
     next();
 });
 
+// Charger les données de services en mémoire
+const loadServicesData = async () => {
+    const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
+    const services = JSON.parse(data);
+
+    // Insérer les données dans AlaSQL
+    alasql('CREATE TABLE IF NOT EXISTS services (img STRING, titre STRING, description STRING)');
+    alasql('INSERT INTO services VALUES ?', [services.chambres]);
+    alasql('INSERT INTO services VALUES ?', [services.autresServices]);
+    alasql('INSERT INTO services VALUES ?', [services.spaCards]);
+    alasql('INSERT INTO services VALUES ?', [services.conciergeries]);
+};
+
 // API pour les services
 app.get('/api/services', async (req, res) => {
     try {
-        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        res.json(JSON.parse(data));
+        const result = alasql('SELECT * FROM services');
+        res.json(result);
     } catch (err) {
-        console.error('Error reading data.json:', err);
+        console.error('Error fetching services:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 });
