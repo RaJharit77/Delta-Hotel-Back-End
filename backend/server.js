@@ -86,7 +86,7 @@ app.use((req, res) => {
 //API pour les services
 app.get('/api/services', async (req, res) => {
     await dbs.read();
-    res.json(db.data);
+    res.json(dbs.data);
 });
 
 // API pour les contacts
