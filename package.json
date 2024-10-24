@@ -20,6 +20,7 @@
     "lowdb": "^7.0.1",
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.2",
+    "path": "^0.12.7",
     "pg": "^8.13.0",
     "promisify": "^0.0.3",
     "react-router-dom": "^6.27.0",

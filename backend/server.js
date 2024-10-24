@@ -1,3 +1,4 @@
+import alasql from 'alasql';
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs/promises';
@@ -76,15 +77,28 @@ app.use((req, res, next) => {
     next();
 });
 
-//API pour les services
-app.get('/api/services', async (req, res) => {
-    try {
-        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        res.json(JSON.parse(data));
-    } catch (err) {
-        console.error('Error reading data.json:', err);
-        res.status(500).json({ message: 'Internal server error', error: err.message });
+// Chargement des données depuis le fichier data.json
+const dataPath = path.join(__dirname, './data/data.json');
+
+fs.readFile(dataPath, 'utf8', (err, data) => {
+    if (err) {
+        console.error('Erreur de lecture du fichier:', err);
+        return;
     }
+
+    const hotelServices = JSON.parse(data);
+
+    // Charger les données dans AlaSQL
+    alasql('CREATE TABLE services (img STRING, titre STRING, description STRING)');
+    hotelServices.hotelServices.chambres.forEach(service => {
+        alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
+    });
+
+    // Routes
+    app.get('/api/services', (req, res) => {
+        const result = alasql('SELECT * FROM services');
+        res.json(result);
+    });
 });
 
 // API pour les contacts
