@@ -4,3 +4,6 @@ node_modules
 
 # Ignorer la base de données SQLite
 database.db
+
+# sauvegarde des codes
+save.js

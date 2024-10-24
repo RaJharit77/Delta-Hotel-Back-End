@@ -1,3 +1,4 @@
+import alasql from 'alasql';
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs/promises';
@@ -79,7 +80,16 @@ app.use((req, res, next) => {
 app.get('/api/services', async (req, res) => {
     try {
         const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        res.json(JSON.parse(data));
+        const services = JSON.parse(data);
+
+        // Vous pouvez maintenant utiliser AlaSQL pour effectuer des requêtes SQL sur les données JSON
+        const chambres = alasql('SELECT * FROM ?',[services[0].chambres]);
+        const autresServices = alasql('SELECT * FROM ?',[services[0].autresServices]);
+        const spaCards = alasql('SELECT * FROM ?',[services[0].spaCards]);
+        const conciergeries = alasql('SELECT * FROM ?',[services[0].conciergeries]);
+
+        // Renvoyer toutes les données ou seulement des parties sélectionnées par requête SQL
+        res.json({ chambres, autresServices, spaCards, conciergeries });
     } catch (err) {
         console.error('Error reading data.json:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });
