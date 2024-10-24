@@ -5,7 +5,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
-import data from './data/data.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,7 +78,7 @@ app.use((req, res, next) => {
 });
 
 // Chargement des données depuis le fichier data.json
-const dataPath = path.join(__dirname, data);
+const dataPath = path.join(__dirname, './data/data.json');
 
 fs.readFile(dataPath, 'utf8', (err, data) => {
     if (err) {
@@ -90,16 +89,20 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
     const hotelServices = JSON.parse(data);
 
     // Charger les données dans AlaSQL
-    alasql('CREATE TABLE services (img STRING, titre STRING, description STRING)');
-    hotelServices.hotelServices.chambres.forEach(service => {
-        alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
-    });
+    try {
+        alasql('CREATE TABLE services (img STRING, titre STRING, description STRING)');
+        hotelServices.hotelServices.chambres.forEach(service => {
+            alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
+        });
 
-    // Routes
-    app.get('/api/services', (req, res) => {
-        const result = alasql('SELECT * FROM services');
-        res.json(result);
-    });
+        // Routes
+        app.get('/api/services', (req, res) => {
+            const result = alasql('SELECT * FROM services');
+            res.json(result);
+        });
+    } catch (error) {
+        console.error('Erreur lors du chargement des services:', error);
+    }
 });
 
 // API pour les contacts
