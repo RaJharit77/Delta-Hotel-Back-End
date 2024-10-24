@@ -90,6 +90,10 @@ const loadServicesData = async () => {
     alasql('INSERT INTO services VALUES ?', [services.conciergeries]);
 };
 
+db.serialize(async () => {
+    await loadServicesData();
+});
+
 // API pour les services
 app.get('/api/services', async (req, res) => {
     try {
