@@ -1,4 +1,3 @@
-import alasql from 'alasql';
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs/promises';
@@ -77,50 +76,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// Charger les données de services en mémoire
-const loadServicesData = async () => {
-    try {
-        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        const services = JSON.parse(data);
-
-        console.log('Données des services:', services);
-
-        // Créer la table si elle n'existe pas déjà
-        alasql('CREATE TABLE IF NOT EXISTS services (img STRING, titre STRING, description STRING, alt STRING)');
-
-        // Insérer les données dans la table 'services'
-        services.chambres.forEach(service => {
-            alasql('INSERT INTO services VALUES (?, ?, ?, ?)', [service.img, service.titre, service.description, service.alt || '']);
-        });
-
-        services.autresServices.forEach(service => {
-            alasql('INSERT INTO services VALUES (?, ?, ?, ?)', [service.img, service.titre, service.description, service.alt || '']);
-        });
-
-        services.spaCards.forEach(service => {
-            alasql('INSERT INTO services VALUES (?, ?, ?, ?)', [service.img, service.title, service.description, service.alt || '']);
-        });
-
-        services.conciergeries.forEach(service => {
-            alasql('INSERT INTO services VALUES (?, ?, ?, ?)', [service.imgSrc, service.title, service.description, service.alt]);
-        });
-    } catch (error) {
-        console.error('Erreur lors du chargement des données de services:', error);
-    }
-};
-
-db.serialize(async () => {
-    await loadServicesData();
-});
-
-// API pour les services
+//API pour les services
 app.get('/api/services', async (req, res) => {
     try {
-        const result = alasql('SELECT * FROM services');
-        console.log('Résultat des services:', result); 
-        res.json(result);
+        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
+        res.json(JSON.parse(data));
     } catch (err) {
-        console.error('Error fetching services:', err);
+        console.error('Error reading data.json:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 });
