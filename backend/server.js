@@ -83,13 +83,15 @@ app.get('/api/services', async (req, res) => {
         console.log('File read successfully:', data);
 
         const services = JSON.parse(data);
+        console.log('Parsed services data:', services);
 
         const query = `SELECT * FROM ?`;
         const result = alasql(query, [services]);
+        console.log('Query result:', result);
 
         res.json(result);
     } catch (error) {
-        console.error('Error processing menu data:', error.message);
+        console.error('Error processing services data:', error.message);
         res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 });
