@@ -42,6 +42,16 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 guest INTEGER
             )
         `);
+
+        db.run(`
+            CREATE TABLE IF NOT EXISTS services (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                img TEXT,
+                titre TEXT,
+                description TEXT,
+                alt TEXT
+            )
+        `);
     }
 });
 
@@ -76,13 +86,73 @@ app.use((req, res, next) => {
     next();
 });
 
-//API pour les services
-app.get('/api/services', async (req, res) => {
+// Charger les données de services en mémoire et les insérer dans la base de données
+const loadServicesData = async () => {
     try {
         const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        res.json(JSON.parse(data));
+        const services = JSON.parse(data);
+        console.log('Données chargées:', services);
+
+        // Vérifiez que les propriétés sont des tableaux avant d'itérer
+        const insertService = (service) => {
+            return new Promise((resolve, reject) => {
+                db.run('INSERT INTO services (img, titre, description, alt) VALUES (?, ?, ?, ?)',
+                    [service.img, service.titre, service.description, service.alt || ''],
+                    (err) => {
+                        if (err) reject(err);
+                        resolve();
+                    });
+            });
+        };
+
+        // Supprimer les anciennes données
+        await new Promise((resolve, reject) => {
+            db.run('DELETE FROM services', (err) => {
+                if (err) reject(err);
+                resolve();
+            });
+        });
+
+        const serviceTypes = ['chambres', 'conciergeries', 'spaCards', 'autresServices'];
+
+        for (const type of serviceTypes) {
+            if (!services[type]) {
+                console.error(`${type} est manquant dans le fichier JSON`);
+                continue; // Skip this type if it's missing
+            }
+            if (!Array.isArray(services[type])) {
+                console.error(`${type} n'est pas un tableau dans le fichier JSON`);
+                continue; // Skip this type if it's not an array
+            }
+            for (const service of services[type]) {
+                await insertService(service);
+            }
+        }        
+
+        console.log('Données des services chargées dans la base de données.');
+    } catch (error) {
+        console.error('Erreur lors du chargement des données de services:', error);
+    }
+};
+
+// Charger les données au démarrage du serveur
+db.serialize(async () => {
+    await loadServicesData();
+});
+
+// API pour les services
+app.get('/api/services', async (req, res) => {
+    try {
+        db.all('SELECT * FROM services', [], (err, rows) => {
+            if (err) {
+                console.error('Error fetching services:', err);
+                res.status(500).json({ message: 'Internal server error', error: err.message });
+            } else {
+                res.json(rows);
+            }
+        });
     } catch (err) {
-        console.error('Error reading data.json:', err);
+        console.error('Error fetching services:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 });
