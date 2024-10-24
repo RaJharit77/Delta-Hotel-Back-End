@@ -1,6 +1,6 @@
+import alasql from 'alasql';
 import cors from 'cors';
 import express from 'express';
-import fs from 'fs/promises';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
@@ -84,9 +84,15 @@ app.use((req, res, next) => {
 app.get('/api/services', async (req, res) => {
     try {
         const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        res.json(JSON.parse(data));
+        const jsonData = JSON.parse(data);
+
+        // Utilisez AlaSQL pour récupérer les services
+        const query = 'SELECT * FROM ?'; // Changez ici si nécessaire pour spécifier la table ou les données
+        const result = alasql(query, [jsonData]); // Passez jsonData directement
+
+        res.json(result);
     } catch (err) {
-        console.error('Error reading data.json:', err);
+        console.error('Error fetching services:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 });
