@@ -85,7 +85,7 @@ app.use((req, res) => {
 //API pour les services
 app.get('/api/services', async (req, res) => {
     try {
-        const result = await db.allDocs({ include_docs: true });
+        const result = await dbs.allDocs({ include_docs: true });
         res.json(result.rows.map(row => row.doc));
     } catch (err) {
         console.error('Error reading data:', err);
