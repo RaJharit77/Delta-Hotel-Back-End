@@ -5,6 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
+import data from './data/data.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -78,7 +79,7 @@ app.use((req, res, next) => {
 });
 
 // Chargement des données depuis le fichier data.json
-const dataPath = path.join(__dirname, './data/data.json');
+const dataPath = path.join(__dirname, data);
 
 fs.readFile(dataPath, 'utf8', (err, data) => {
     if (err) {
