@@ -21,8 +21,10 @@
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.2",
     "pg": "^8.13.0",
+    "promisify": "^0.0.3",
     "react-router-dom": "^6.27.0",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
