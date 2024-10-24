@@ -79,15 +79,32 @@ app.use((req, res, next) => {
 
 // Charger les données de services en mémoire
 const loadServicesData = async () => {
-    const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-    const services = JSON.parse(data);
+    try {
+        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
+        const services = JSON.parse(data);
 
-    // Insérer les données dans AlaSQL
-    alasql('CREATE TABLE IF NOT EXISTS services (img STRING, titre STRING, description STRING)');
-    alasql('INSERT INTO services VALUES ?', [services.chambres]);
-    alasql('INSERT INTO services VALUES ?', [services.autresServices]);
-    alasql('INSERT INTO services VALUES ?', [services.spaCards]);
-    alasql('INSERT INTO services VALUES ?', [services.conciergeries]);
+        // Créer la table si elle n'existe pas déjà
+        alasql('CREATE TABLE IF NOT EXISTS services (img STRING, titre STRING, description STRING)');
+
+        // Insérer les données dans la table 'services'
+        services.chambres.forEach(service => {
+            alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
+        });
+
+        services.autresServices.forEach(service => {
+            alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
+        });
+
+        services.spaCards.forEach(service => {
+            alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
+        });
+
+        services.conciergeries.forEach(service => {
+            alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
+        });
+    } catch (error) {
+        console.error('Erreur lors du chargement des données de services:', error);
+    }
 };
 
 db.serialize(async () => {
