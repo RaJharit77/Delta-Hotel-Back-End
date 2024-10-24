@@ -88,21 +88,20 @@ fs.readFile(dataPath, 'utf8', (err, data) => {
 
     const hotelServices = JSON.parse(data);
 
-    // Charger les données dans AlaSQL
     try {
         alasql('CREATE TABLE services (img STRING, titre STRING, description STRING)');
         hotelServices.hotelServices.chambres.forEach(service => {
             alasql('INSERT INTO services VALUES (?, ?, ?)', [service.img, service.titre, service.description]);
         });
-
-        // Routes
-        app.get('/api/services', (req, res) => {
-            const result = alasql('SELECT * FROM services');
-            res.json(result);
-        });
     } catch (error) {
         console.error('Erreur lors du chargement des services:', error);
     }
+});
+
+// API pour les services
+app.get('/api/services', (req, res) => {
+    const result = alasql('SELECT * FROM services');
+    res.json(result);
 });
 
 // API pour les contacts
