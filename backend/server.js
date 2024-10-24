@@ -84,19 +84,9 @@ app.use((req, res, next) => {
 app.get('/api/services', async (req, res) => {
     try {
         const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        const jsonData = JSON.parse(data);
-
-        // Récupération de toutes les données à partir de jsonData
-        const servicesData = {
-            chambres: jsonData[0].chambres,
-            conciergeries: jsonData[0].conciergeries,
-            spaCards: jsonData[0].spaCards,
-            autresServices: jsonData[0].autresServices
-        };
-
-        res.json(servicesData);
+        res.json(JSON.parse(data));
     } catch (err) {
-        console.error('Error fetching services:', err);
+        console.error('Error reading data.json:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 });
