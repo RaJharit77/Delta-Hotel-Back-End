@@ -1,9 +1,10 @@
-import sqlite3 from 'better-sqlite3';
 import cors from 'cors';
 import express from 'express';
-import fs from 'fs/promises';
+import { JSONFile, Low } from 'lowdb';
 import path from 'path';
+import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
+import dataPath from './data/data.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,6 +13,11 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 const dbPath = process.env.DB_PATH || './database.db';
+
+// Setup LowDB
+const dataPath = path.join(__dirname, './data/data.json');
+const adapter = new JSONFile(dataPath);
+const dbs = new Low(adapter);
 
 //SQLite
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -80,41 +86,24 @@ app.use((req, res) => {
     res.status(404).json({ message: 'Route non trouvée.' });
 });
 
-// Chargement des données depuis le fichier data.json
-const dataPath = path.join(__dirname, './data/data.json');
-
-fs.readFile(dataPath, 'utf8')
-    .then(data => {
-        const hotelServices = JSON.parse(data);
-        const servicesStmt = db.prepare(`
-            CREATE TABLE IF NOT EXISTS services (
-                img TEXT,
-                titre TEXT,
-                description TEXT
-            );
-        `);
-        servicesStmt.run();
-
-        const insertServiceStmt = db.prepare(`
-            INSERT INTO services (img, titre, description)
-            VALUES (?, ?, ?)
-        `);
-        hotelServices.hotelServices.chambres.forEach(service => {
-            insertServiceStmt.run(service.img, service.titre, service.description);
-        });
-    })
-    .catch(err => {
-        console.error('Erreur de lecture du fichier:', err);
-    });
-
-// API pour les services
-app.get('/api/services', (req, res) => {
+// Endpoint pour les services
+app.get('/api/services', async (req, res) => {
     try {
-        const services = db.prepare('SELECT * FROM services').all();
+        // Charger les données
+        await db.read();
+        const hotelServices = db.data.hotelServices;
+
+        // Extraire les chambres
+        const services = hotelServices.chambres.map(service => ({
+            img: service.img,
+            titre: service.titre,
+            description: service.description
+        }));
+
         res.json(services);
     } catch (error) {
-        console.error('Erreur lors de la récupération des services:', error);
-        res.status(500).json({ message: 'Erreur lors de la récupération des services' });
+        console.error('Erreur lors du chargement des services:', error);
+        res.status(500).json({ message: 'Erreur lors du chargement des services.' });
     }
 });
 
