@@ -90,7 +90,7 @@ app.use((req, res) => {
 // Chargement des données depuis le fichier data.json
 const dataPath = path.join(__dirname, './data/data.json');
 
-fs.readFile(dataPath, 'utf8', async (err, data) => {
+fs.readFile('./data/data.json', 'utf8', async (err, data) => {
     if (err) {
         console.error('Erreur de lecture du fichier:', err);
         return;
