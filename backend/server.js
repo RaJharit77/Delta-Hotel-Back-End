@@ -1,3 +1,4 @@
+import alasql from 'alasql';
 import cors from 'cors';
 import express from 'express';
 import fs from 'fs-extra';
@@ -71,10 +72,16 @@ app.use(express.json());
 //API pour les services
 app.get('/api/services', async (req, res) => {
     try {
-        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        res.json(JSON.parse(data));
+        const dataPath = path.join(__dirname, './data/data.json');
+        const rawData = await fs.readFile(dataPath, 'utf8');
+        const data = JSON.parse(rawData);
+
+        // Requête SQL exemple pour sélectionner tous les services
+        const queryResult = alasql('SELECT * FROM ?', [data]);
+
+        res.json(queryResult);
     } catch (err) {
-        console.error('Error reading data.json:', err);
+        console.error('Error reading data.json with AlaSQL:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 });
