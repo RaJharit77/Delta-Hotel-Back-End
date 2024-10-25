@@ -84,7 +84,7 @@ app.use((req, res) => {
 app.get('/api/services', async (req, res) => {
     try {
         const data = await jsonfile.readFile('./data/data.json');
-        res.json(data);
+        res.json(JSON.parse(data));
     } catch (err) {
         console.error('Error reading data.json:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });
