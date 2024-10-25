@@ -76,7 +76,6 @@ app.get('/api/services', async (req, res) => {
         const rawData = await fs.readFile(dataPath, 'utf8');
         const data = JSON.parse(rawData);
 
-        // Requête SQL exemple pour sélectionner tous les services
         const queryResult = alasql('SELECT * FROM ?', [data]);
 
         res.json(queryResult);
