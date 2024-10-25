@@ -1,6 +1,6 @@
 import cors from 'cors';
 import express from 'express';
-import fs from 'graceful-fs';
+import jsonfile from 'jsonfile';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
@@ -83,8 +83,8 @@ app.use((req, res) => {
 //API pour les services
 app.get('/api/services', async (req, res) => {
     try {
-        const data = await fs.promises.readFile(path.join(__dirname, './data/data.json'), 'utf8');
-        res.json(JSON.parse(data));
+        const data = await jsonfile.readFile('./data/data.json');
+        res.json(data);
     } catch (err) {
         console.error('Error reading data.json:', err);
         res.status(500).json({ message: 'Internal server error', error: err.message });

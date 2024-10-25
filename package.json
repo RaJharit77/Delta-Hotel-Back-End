@@ -18,6 +18,7 @@
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
     "graceful-fs": "^4.2.11",
+    "jsonfile": "^6.1.0",
     "lowdb": "^7.0.1",
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.2",
