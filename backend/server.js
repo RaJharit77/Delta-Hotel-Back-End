@@ -68,18 +68,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use((req, res, next) => {
-    res.setTimeout(10000, () => {  // Timeout fixé à 10 secondes
-        console.log('Request has timed out.');
-        res.status(504).send('Request timed out');
-    });
-    next();
-});
-
-app.use((req, res) => {
-    res.status(404).json({ message: 'Route non trouvée.' });
-});
-
 //API pour les services
 app.get('/api/services', async (req, res) => {
     try {
@@ -129,6 +117,18 @@ app.post('/api/reservations', async (req, res) => {
         console.error('Erreur lors de la réservation:', error);
         res.status(500).json({ message: 'Erreur lors de la réservation.', error: error.message });
     }
+});
+
+app.use((req, res) => {
+    res.status(404).json({ message: 'Route non trouvée.' });
+});
+
+app.use((req, res, next) => {
+    res.setTimeout(10000, () => {  // Timeout fixé à 10 secondes
+        console.log('Request has timed out.');
+        res.status(504).send('Request timed out');
+    });
+    next();
 });
 
 app.listen(PORT, () => {
