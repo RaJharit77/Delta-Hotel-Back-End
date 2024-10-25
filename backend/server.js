@@ -1,6 +1,6 @@
 import cors from 'cors';
 import express from 'express';
-import jsonfile from 'jsonfile';
+import { promises as fs } from 'fs';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';
@@ -83,7 +83,7 @@ app.use((req, res) => {
 //API pour les services
 app.get('/api/services', async (req, res) => {
     try {
-        const data = await jsonfile.readFile('./data/data.json');
+        const data = await fs.readFile(path.join(__dirname, './data/data.json'), 'utf8');
         res.json(JSON.parse(data));
     } catch (err) {
         console.error('Error reading data.json:', err);
