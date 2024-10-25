@@ -1,6 +1,6 @@
 import cors from 'cors';
 import express from 'express';
-import { promises as fs } from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import sqlite3 from 'sqlite3';
 import { fileURLToPath } from 'url';

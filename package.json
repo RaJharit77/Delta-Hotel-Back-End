@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
+    "fs-extra": "^11.2.0",
     "graceful-fs": "^4.2.11",
     "jsonfile": "^6.1.0",
     "lowdb": "^7.0.1",
