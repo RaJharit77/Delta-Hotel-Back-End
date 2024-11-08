@@ -1,8 +1,8 @@
 # Delta-Hotel-Back-End
-Ce projet est à propos de la restaurant nommé <mark>Delta Hotel®</mark> en utilisant le framework <mark>Express JS</mark> et le SGBD <mark>SQLite</mark> ainsi que l'utilisation d'une autre bibliothèque nommé <mark>AlaSQL</mark> comme outils pour le back-end de ce site.
+Ce projet est à propos de l'Hôtel nommé <mark>Delta Hotel®</mark> en utilisant le framework <mark>Express JS</mark> et le SGBD <mark>SQLite</mark> ainsi que l'utilisation d'une autre bibliothèque nommé <mark>AlaSQL</mark> comme outils pour le back-end de ce site.
 
 ### Description du projet
-Ceci est une repository pour le backend avec l'API Rest de mon projet personnel pendant une année de passage (L1) chez HEI(Haute École d'informatique) nommé Delta Hôtel.
+Ceci est une repository pour le backend avec l'API Rest de mon projet personnel pendant une année de passage (L1) chez HEI(Haute École d'informatique).
 
 ### L'idée générale du projet
 Ce projet est une inspiration de <mark>la maquette de notre site d'hôtel pendant notre examen</mark> en <mark>WEB</mark> et aussi la passion pour l'informatique de créer et donner une solution innovante pour la génération futur. 
