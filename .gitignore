@@ -7,3 +7,4 @@ database.db
 
 # sauvegarde des codes
 save.js
+/generated/prisma

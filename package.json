@@ -5,12 +5,17 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "server": "nodemon ./backend/server.js"
+    "server": "nodemon ./backend/server.js",
+    "migrate": "node ./backend/script/migrate.js",
+    "build": "prisma generate && prisma db push",
+    "vercel-build": "prisma generate && prisma db push"
   },
   "keywords": [],
   "author": "RaJharit77",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.15.0",
+    "@prisma/extension-accelerate": "^2.0.2",
     "alasql": "^4.5.2",
     "axios": "^1.7.7",
     "body-parser": "^1.20.3",
@@ -29,12 +34,14 @@
     "promisify": "^0.0.3",
     "react-router-dom": "^6.27.0",
     "sqlite3": "^5.1.7",
-    "util": "^0.12.5"
+    "util": "^0.12.5",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.11",
     "@types/cors": "^2.8.17",
     "@types/graceful-fs": "^4.1.9",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "prisma": "^6.15.0"
   }
 }
