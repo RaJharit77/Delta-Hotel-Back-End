@@ -23,91 +23,98 @@ const corsOptions = {
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
-};
+}
 
-app.use(cors(corsOptions));
-app.use(express.json());
+app.use(cors(corsOptions))
+app.use(express.json())
 
-//API pour les services
+// API pour les services
 app.get('/api/services', async (req, res) => {
     try {
-        const services = {
-            chambres: await prisma.chambre.findMany(),
-            conciergeries: await prisma.conciergerie.findMany(),
-            spaCards: await prisma.spa.findMany(),
-            autresServices: await prisma.autreService.findMany()
-        };
+        const [chambres, conciergeries, spaCards, autresServices] = await Promise.all([
+            prisma.chambre.findMany(),
+            prisma.conciergerie.findMany(),
+            prisma.spa.findMany(),
+            prisma.autreService.findMany()
+        ])
 
-        res.json([services]);
+        res.json([{
+            chambres,
+            conciergeries,
+            spaCards,
+            autresServices
+        }])
     } catch (err) {
-        console.error('Error fetching services:', err);
-        res.status(500).json({ message: 'Internal server error', error: err.message });
+        console.error('Error fetching data:', err)
+        res.status(500).json({ message: 'Internal server error', error: err.message })
     }
-});
+})
 
 // API pour les contacts
 app.post('/api/contacts', async (req, res) => {
-    const contactData = req.body;
+    const { name, email, subject, message } = req.body
 
-    if (!contactData.name || !contactData.email || !contactData.message) {
-        return res.status(400).json({ message: 'Tous les champs sont requis.' });
+    if (!name || !email || !message) {
+        return res.status(400).json({ message: 'Tous les champs sont requis.' })
     }
 
     try {
         const contact = await prisma.contact.create({
             data: {
-                name: contactData.name,
-                email: contactData.email,
-                subject: contactData.subject || '',
-                message: contactData.message
+                id: uuidv4(),
+                name,
+                email,
+                subject,
+                message
             }
-        });
-        res.status(200).json({ message: 'Message envoyé avec succès.', contactId: contact.id });
+        })
+        res.status(200).json({ message: 'Message envoyé avec succès.', contactId: contact.id })
     } catch (error) {
-        console.error('Erreur lors de l\'envoi du message:', error);
-        res.status(500).json({ message: 'Erreur lors de l\'envoi du message.', error: error.message });
+        console.error('Erreur lors de l\'envoi du message:', error)
+        res.status(500).json({ message: 'Erreur lors de l\'envoi du message.', error: error.message })
     }
-});
+})
 
 // API pour les réservations
 app.post('/api/reservations', async (req, res) => {
-    const { fullName, email, phone, checkIn, checkOut, roomType, guests } = req.body;
+    const { fullName, email, phone, checkIn, checkOut, roomType, guests } = req.body
 
     if (!fullName || !email || !phone || !checkIn || !checkOut || !roomType || !guests) {
-        return res.status(400).json({ message: 'Tous les champs sont requis.' });
+        return res.status(400).json({ message: 'Tous les champs sont requis.' })
     }
 
     try {
         const reservation = await prisma.reservation.create({
             data: {
+                id: uuidv4(),
                 name: fullName,
-                email: email,
-                phone: phone,
+                email,
+                phone,
                 check_in: checkIn,
                 check_out: checkOut,
                 room_type: roomType,
                 guest: parseInt(guests)
             }
-        });
-        res.status(200).json({ message: 'Réservation réussie.', reservationId: reservation.id });
+        })
+        res.status(200).json({ message: 'Réservation réussie.', reservationId: reservation.id })
     } catch (error) {
-        console.error('Erreur lors de la réservation:', error);
-        res.status(500).json({ message: 'Erreur lors de la réservation.', error: error.message });
+        console.error('Erreur lors de la réservation:', error)
+        res.status(500).json({ message: 'Erreur lors de la réservation.', error: error.message })
     }
-});
+})
 
 app.use((req, res) => {
-    res.status(404).json({ message: 'Route non trouvée.' });
-});
+    res.status(404).json({ message: 'Route non trouvée.' })
+})
 
 app.use((req, res, next) => {
     res.setTimeout(10000, () => {
-        console.log('Request has timed out.');
-        res.status(504).send('Request timed out');
-    });
-    next();
-});
+        console.log('Request has timed out.')
+        res.status(504).send('Request timed out')
+    })
+    next()
+})
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+    console.log(`Server is running on http://localhost:${PORT}`)
+})
