@@ -28,6 +28,16 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const test = await prisma.$queryRaw`SELECT 1 as test`;
+        res.json({ success: true, result: test });
+    } catch (error) {
+        console.error('Database connection error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 //API pour les services
 app.get('/api/services', async (req, res) => {
     try {
