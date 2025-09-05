@@ -7,7 +7,7 @@
   "scripts": {
     "server": "nodemon ./backend/server.js",
     "migrate": "node ./backend/script/migrate.js",
-    "build": "prisma generate && prisma db push && prisma migrate deploy",
+    "build": "prisma generate",
     "vercel-build": "prisma generate && prisma db push"
   },
   "keywords": [],
