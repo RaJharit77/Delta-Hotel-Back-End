@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../../generated/prisma/index.js'
 import { v4 as uuidv4 } from 'uuid'
 import fs from 'fs'
 import path from 'path'
