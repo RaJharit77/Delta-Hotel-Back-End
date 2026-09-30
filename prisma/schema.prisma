@@ -10,11 +10,10 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Contact {
-  id      String   @id @default(uuid())
+  id      String  @id @default(uuid())
   name    String
   email   String
   subject String?
@@ -22,7 +21,7 @@ model Contact {
 }
 
 model Reservation {
-  id        String   @id @default(uuid())
+  id        String @id @default(uuid())
   name      String
   email     String
   phone     String
